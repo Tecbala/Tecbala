@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'screens/login.dart'; // Importe a nova tela
+import 'screens/login.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   // Função que testa a conexão com o backend
   Future<void> testarConexao() async {
     try {
-      final response = await http.get(Uri.parse('http://localhost:3000/user'));
+      final response = await http.get(Uri.parse('http://192.168.1.11:3000/user'));
 
       if (response.statusCode == 200) {
         print('✅ Conectado ao backend: ${response.body}');

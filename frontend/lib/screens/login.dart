@@ -17,9 +17,9 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
 
-  bool _isLogin = false; // false = cadastro, true = login
+  bool _isLogin = true; // false = cadastro, true = login
 
-  final String baseUrl = 'http://localhost:3000/auth';
+  final String baseUrl = 'http://192.168.1.11:3000/auth';
 
   Future<void> _authenticate() async {
     try {
@@ -41,6 +41,7 @@ class _LoginPageState extends State<LoginPage> {
         if (_isLogin) {
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString('token', data['token']);
+          await prefs.setString('name', data['user']['name']);
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const Dashboard()),
@@ -78,10 +79,10 @@ class _LoginPageState extends State<LoginPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'assets/logo.png', // substitua pelo caminho da sua logo
-                    height: 50,
-                  ),
+                  // Image.asset(
+                  //   'assets/logo.png', // substitua pelo caminho da sua logo
+                  //   height: 50,
+                  // ),
                   const SizedBox(width: 8),
                   const Text(
                     'TechBala',

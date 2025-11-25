@@ -4,6 +4,13 @@ import 'package:meu_app/screens/apresVolei.dart';
 class ApresNatacao extends StatelessWidget {
   const ApresNatacao({super.key});
 
+  void _goToApresentacao(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const Apresvolei()), // Nome correto da classe
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +37,7 @@ class ApresNatacao extends StatelessWidget {
                   ),
                   child: Center(
                     child: Image.asset(
-                      'assets/natacao.png', // coloque sua imagem aqui
+                      'lib/assets/natacao.png',
                       width: 100,
                       height: 100,
                       fit: BoxFit.contain,
@@ -69,56 +76,50 @@ class ApresNatacao extends StatelessWidget {
                 ),
               ],
             ),
-
-            // Indicador + botão "Próximo"
+              const SizedBox(height: 40),
+            // Botões
             Padding(
-              padding: const EdgeInsets.only(bottom: 20.0, left: 20, right: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start, // Botão voltar à esquerda
                 children: [
-                  // Pontos de progresso
-                  Row(
-                    children: [
-                      Container(
-                        width: 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          color: Colors.blue[200],
-                          shape: BoxShape.circle,
+                  // Botão Avançar (centralizado)
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: () => _goToApresentacao(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueAccent,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      const SizedBox(width: 6),
-                      Container(
-                        width: 8,
-                        height: 8,
-                        decoration: const BoxDecoration(
-                          color: Colors.blueAccent,
-                          shape: BoxShape.circle,
-                        ),
+                      child: const Text(
+                        'Avançar',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      const SizedBox(width: 6),
-                      Container(
-                        width: 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          color: Colors.blue[200],
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                  const Spacer(),
-                  GestureDetector(
-                    onTap: () {
-                      // ação de próximo
+
+                  const SizedBox(height: 10), // Espaço entre os botões
+
+                  // Botão Voltar
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context); // Volta para a tela anterior
                     },
-                    child: const Text(
-                      'Próximo',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.blueAccent,
-                        fontWeight: FontWeight.bold,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
+                    ),
+                    child: const Text(
+                      'Voltar',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],

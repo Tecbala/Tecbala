@@ -14,4 +14,4 @@ mongoose.connect('mongodb+srv://tecbala8_db_user:G9T5L7J1k4lQCLOt@cluster0.fs2ft
 
 app.use('/auth', authRoutes);
 
-app.listen(3000, () => console.log('🚀 Servidor rodando na porta 3000'));
+app.listen(3000,'0.0.0.0', () => console.log('🚀 Servidor rodando na porta 3000'));

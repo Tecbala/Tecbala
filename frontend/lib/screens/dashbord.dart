@@ -17,7 +17,7 @@ class _DashboardState extends State<Dashboard> {
   String userEmail = '';
   bool isLoading = true;
 
-  final String baseurl = 'http://localhost:3000/auth';
+final String baseurl = 'http://192.168.1.11:3000';
 
   @override
   void initState() {
@@ -39,12 +39,14 @@ class _DashboardState extends State<Dashboard> {
         return;
       }
 
-      final response = await http.get(Uri.parse('$baseurl/user'),
+      final response = await http.get(Uri.parse('$baseurl/auth/user'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
       );
+      print("STATUS CODE: ${response.statusCode}");
+      print("RESPOSTA BODY: ${response.body}");
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -104,7 +106,7 @@ class _DashboardState extends State<Dashboard> {
                   const Icon(Icons.person, size: 100, color: Colors.blueAccent),
                   const SizedBox(height: 20),
                   Text(
-                    'Bem-vindo(a) ao TechBala, $userName!',
+                    'Bem-vindo(a) ao\n TechBala, $userName!',
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -112,10 +114,10 @@ class _DashboardState extends State<Dashboard> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 10),
-                  Text(
-                    userEmail,
-                    style: const TextStyle(fontSize: 18, color: Colors.grey),
-                  ),
+                  // Text(
+                  //   userEmail,
+                  //   style: const TextStyle(fontSize: 18, color: Colors.grey),
+                  // ),
                   const SizedBox(height: 40),
                   // Botão Começar
                   ElevatedButton(
@@ -124,11 +126,11 @@ class _DashboardState extends State<Dashboard> {
                       backgroundColor: Colors.blueAccent,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 40,
+                        horizontal: 50,
                         vertical: 16,
                       ),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                     ),
                     child: const Text(
