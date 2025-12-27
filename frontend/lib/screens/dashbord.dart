@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:meu_app/screens/login.dart';
-import 'package:meu_app/screens/apresNatacao.dart'; // Importe com o nome correto
+import 'package:meu_app/screens/apresNatacao.dart'; 
+import 'package:meu_app/api/api_config.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -17,8 +19,6 @@ class _DashboardState extends State<Dashboard> {
   String userEmail = '';
   bool isLoading = true;
 
-final String baseurl = 'http://192.168.1.7:3000';
-
   @override
   void initState() {
     super.initState();
@@ -31,28 +31,34 @@ final String baseurl = 'http://192.168.1.7:3000';
       final token = prefs.getString('token');
 
       if (token == null) {
-        // se não tiver token, volta para o login
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const LoginPage()),
+          MaterialPageRoute(builder: (_) => const LoginPage()),
         );
         return;
       }
 
-      final response = await http.get(Uri.parse('$baseurl/auth/user'),
+      final url = Uri.parse(
+        '${ApiConfig.baseUrl}${ApiConfig.auth}/me',
+      );
+
+      final response = await http.get(
+        url,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
       );
+
       print("STATUS CODE: ${response.statusCode}");
-      print("RESPOSTA BODY: ${response.body}");
+      print("BODY: ${response.body}");
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+
         setState(() {
           userName = data['name'] ?? 'Usuário';
-          userEmail = data['email'] ?? 'Email não encontrado';
+          userEmail = data['email'] ?? '';
           isLoading = false;
         });
       } else {
@@ -62,7 +68,7 @@ final String baseurl = 'http://192.168.1.7:3000';
         );
       }
     } catch (e) {
-      print(e);
+      print("ERRO: $e");
       setState(() => isLoading = false);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Falha na conexão com o servidor')),
@@ -73,16 +79,17 @@ final String baseurl = 'http://192.168.1.7:3000';
   Future<void> _logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('token');
+
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const LoginPage()),
+      MaterialPageRoute(builder: (_) => const LoginPage()),
     );
   }
 
   void _goToApresentacao() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const ApresNatacao()), // Nome correto da classe
+      MaterialPageRoute(builder: (_) => const ApresNatacao()),
     );
   }
 
@@ -106,20 +113,14 @@ final String baseurl = 'http://192.168.1.7:3000';
                   const Icon(Icons.person, size: 100, color: Colors.blueAccent),
                   const SizedBox(height: 20),
                   Text(
-                    'Bem-vindo(a) ao\n TechBala, $userName!',
-                    style: const TextStyle(
+                    'Bem-vindo(a) ao\nTechBala, $userName!',
+                    style: GoogleFonts.righteous(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 10),
-                  // Text(
-                  //   userEmail,
-                  //   style: const TextStyle(fontSize: 18, color: Colors.grey),
-                  // ),
                   const SizedBox(height: 40),
-                  // Botão Começar
                   ElevatedButton(
                     onPressed: _goToApresentacao,
                     style: ElevatedButton.styleFrom(
@@ -133,9 +134,9 @@ final String baseurl = 'http://192.168.1.7:3000';
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    child: const Text(
+                    child: Text(
                       'Começar...',
-                      style: TextStyle(
+                      style: GoogleFonts.righteous(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),

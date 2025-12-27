@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:meu_app/screens/sport_selection_screen.dart'; // Substitua pela próxima tela real
+import 'package:meu_app/screens/sport_selection_screen.dart'; 
+import 'package:google_fonts/google_fonts.dart';
 
 class ApresMMA extends StatelessWidget {
   const ApresMMA({super.key});
@@ -48,9 +49,9 @@ class ApresMMA extends StatelessWidget {
                 const SizedBox(height: 40),
 
                 // Título
-                const Text(
+                Text(
                   'MMA',
-                  style: TextStyle(
+                  style: GoogleFonts.righteous(
                     fontSize: 40,
                     fontWeight: FontWeight.bold,
                     color: Colors.black54,
@@ -61,11 +62,11 @@ class ApresMMA extends StatelessWidget {
                 const SizedBox(height: 16),
 
                 // Texto descritivo
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24.0),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: Text(
                     'Força, técnica e controle sob pressão.\nCombina múltiplas artes para dominar\ncada segundo do combate.',
-                    style: TextStyle(
+                    style: GoogleFonts.righteous(
                       fontSize: 18,
                       color: Colors.black87,
                       height: 1.4,
@@ -94,9 +95,9 @@ class ApresMMA extends StatelessWidget {
                       ),
                       elevation: 8, // Sombra
                     ),
-                    child: const Text(
+                    child: Text(
                       'Avançar',
-                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                      style: GoogleFonts.righteous(fontSize: 22, fontWeight: FontWeight.bold),
                     ),
                   ),
 

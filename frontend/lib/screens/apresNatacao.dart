@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meu_app/screens/apresVolei.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ApresNatacao extends StatelessWidget {
   const ApresNatacao({super.key});
@@ -48,9 +49,9 @@ class ApresNatacao extends StatelessWidget {
                 const SizedBox(height: 40),
 
                 // Título
-                const Text(
+                Text(
                   'Natação',
-                  style: TextStyle(
+                  style: GoogleFonts.righteous(
                     fontSize: 40,
                     fontWeight: FontWeight.bold,
                     color: Colors.black54,
@@ -61,12 +62,12 @@ class ApresNatacao extends StatelessWidget {
                 const SizedBox(height: 16),
 
                 // Texto descritivo
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24.0),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: Text(
                     'Exige força, técnica e resistência. Trabalha todo o '
                     'corpo e busca o máximo desempenho em cada braçada.',
-                    style: TextStyle(
+                    style: GoogleFonts.righteous(
                       fontSize: 18,
                       color: Colors.black87,
                       height: 1.4,
@@ -95,9 +96,9 @@ class ApresNatacao extends StatelessWidget {
                       ),
                       elevation: 8, // Sombra
                     ),
-                    child: const Text(
+                    child: Text(
                       'Avançar',
-                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                      style: GoogleFonts.righteous(fontSize: 22, fontWeight: FontWeight.bold),
                     ),
                   ),
 

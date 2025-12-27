@@ -2,29 +2,41 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
+
+// 🔐 segredo único
+const JWT_SECRET = process.env.JWT_SECRET || "mysecretkey";
+
 
 // 🧾 Cadastro
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    let user = await User.findOne({ email });
-    if (user) {
+    const userExists = await User.findOne({ email });
+    if (userExists) {
       return res.status(400).json({ message: "Usuário já existe" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    user = new User({ name, email, password: hashedPassword });
+
+    const user = new User({
+      name,
+      email,
+      password: hashedPassword,
+    });
+
     await user.save();
 
     res.status(201).json({ message: "Usuário registrado com sucesso" });
   } catch (err) {
-    console.log("ERRO NO CADASTRO:", err.message);
-    res.status(500).json({ error: err.message });
+    console.error("ERRO NO CADASTRO:", err);
+    res.status(500).json({ message: "Erro no servidor" });
   }
 });
+
 
 // 🔑 Login
 router.post("/login", async (req, res) => {
@@ -33,46 +45,52 @@ router.post("/login", async (req, res) => {
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ error: "Credenciais inválidas" });
+      return res.status(400).json({ message: "Credenciais inválidas" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ error: "Credenciais inválidas" });
+      return res.status(400).json({ message: "Credenciais inválidas" });
     }
 
     const token = jwt.sign(
-      { userId: user._id, role: user.role },
-      "mysecretkey",
-      { expiresIn: "1h" } // <-- faltava o 's' em expiresIn
+      {
+        userId: user._id,
+        role: user.role,
+      },
+      JWT_SECRET,
+      { expiresIn: "1h" }
     );
 
     res.status(200).json({
-      message: "Login realizado com sucesso!",
+      message: "Login realizado com sucesso",
       token,
-      user: { name: user.name, email: user.email },
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
     });
   } catch (err) {
-    console.error("Erro no login:", err.message);
-    res.status(500).json({ error: "Erro no servidor" });
+    console.error("Erro no login:", err);
+    res.status(500).json({ message: "Erro no servidor" });
   }
 });
 
-// 👤 Listar usuários (ou o atual)
-router.get("/user", async (req, res) => {
+
+// 👤 Usuário logado (ME)
+router.get("/me", authMiddleware, async (req, res) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) return res.status(401).json({ error: "Token ausente" });
+    const user = await User.findById(req.user.userId).select("-password");
 
-    const decoded = jwt.verify(token, "mysecretkey");
+    if (!user) {
+      return res.status(404).json({ message: "Usuário não encontrado" });
+    }
 
-    const user = await User.findById(decoded.userId).select("-password");
-    if (!user) return res.status(404).json({ error: "Usuário não encontrado" });
-
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(500).json({ error: "Erro no servidor" });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: "Erro no servidor" });
   }
-})
+});
 
 export default router;

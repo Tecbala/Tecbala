@@ -1,26 +1,30 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:meu_app/api/api_config.dart';
 
 class AuthService {
-  // Endereço base do seu backend Node.js
-  // No emulador Android, use "10.0.2.2"
-final String baseUrl = 'http://192.168.1.7:3000/auth';
 
-  // Função de login que envia o email e senha para o backend
   Future<bool> login(String email, String senha) async {
     try {
-      // Faz uma requisição POST para a rota /login
-      final response = await http.post(
-        Uri.parse("$baseUrl/login"),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"email": email, "senha": senha}),
+      final url = Uri.parse(
+        '${ApiConfig.baseUrl}${ApiConfig.auth}/login',
       );
 
-      // Se o backend responder com sucesso (status 200)
+      final response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode({
+          "email": email,
+          "password": senha,
+        }),
+      );
+
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        print("✅ Login bem-sucedido!");
-        print("Token recebido: ${data['token']}"); // mostra o token JWT
+        print("✅ Login bem-sucedido");
+        print("Token: ${data['token']}");
         return true;
       } else {
         print("❌ Erro no login: ${response.body}");

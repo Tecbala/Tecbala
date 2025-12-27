@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:meu_app/screens/registration_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 // Definição das cores aproximadas da imagem
 class AppColors {
@@ -60,10 +62,10 @@ class _SportSelectionScreenState extends State<SportSelectionScreen> {
               const SizedBox(height: 40),
 
               // 2. Título "Escolha seu esporte"
-              const Text(
+              Text(
                 'Escolha seu\nesporte',
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: GoogleFonts.righteous(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,
@@ -92,12 +94,19 @@ class _SportSelectionScreenState extends State<SportSelectionScreen> {
 
               // 4. Botão "Avançar"
               ElevatedButton(
-                onPressed: _selectedSport != null
-                    ? () {
-                        // Lógica para avançar
-                        print('Avançar com esporte: $_selectedSport');
-                      }
-                    : null, // Desabilita se nenhum esporte for selecionado
+  onPressed: _selectedSport != null
+      ? () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RegistrationScreen(
+                esporteSelecionado: _selectedSport!,
+              ),
+            ),
+          );
+        }
+      : null,
+ // Desabilita se nenhum esporte for selecionado
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryBlue,
                   foregroundColor: Colors.white,
@@ -107,9 +116,9 @@ class _SportSelectionScreenState extends State<SportSelectionScreen> {
                   ),
                   elevation: 5,
                 ),
-                child: const Text(
+                child: Text(
                   'Avançar',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: GoogleFonts.righteous(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ),
             ],
@@ -206,7 +215,7 @@ class SportSelectionButton extends StatelessWidget {
             // Nome do Esporte
             Text(
               sport.name,
-              style: const TextStyle(
+              style: GoogleFonts.righteous(
                 color: Colors.white,
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
@@ -218,22 +227,3 @@ class SportSelectionButton extends StatelessWidget {
     );
   }
 }
-
-// Exemplo de como usar a tela no seu `main.dart`
-/*
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'TechBala Sports',
-      home: SportSelectionScreen(),
-    );
-  }
-}
-*/

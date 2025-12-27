@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:meu_app/api/api_config.dart';
 import 'package:meu_app/screens/dashbord.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,11 +17,10 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
 
-  bool _isLogin = true; // false = cadastro, true = login
+  bool _isLogin = true;
 
-  final String baseUrl = 'http://192.168.1.7:3000/auth';
+  final String baseUrl = '${ApiConfig.baseUrl}${ApiConfig.auth}';
 
   Future<void> _authenticate() async {
     try {
@@ -42,9 +43,10 @@ class _LoginPageState extends State<LoginPage> {
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString('token', data['token']);
           await prefs.setString('name', data['user']['name']);
+
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const Dashboard()),
+            MaterialPageRoute(builder: (_) => const Dashboard()),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -58,91 +60,100 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     } catch (e) {
-      print(e);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Erro de conexão com o servidor')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Erro de conexão')));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFEAF2FA), // fundo azul clarinho
-      body: Center(
+      resizeToAvoidBottomInset: true,
+      backgroundColor: const Color(0xFFB3E5FC),
+      body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 40),
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          padding: EdgeInsets.only(
+            left: 30,
+            right: 30,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+          ),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Logo e título
+              /// Logo
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Image.asset(
-                  //   'assets/logo.png', // substitua pelo caminho da sua logo
-                  //   height: 50,
-                  // ),
+                  Image.asset('lib/assets/tecbala_logo.png', width: 40, height: 40),
                   const SizedBox(width: 8),
-                  const Text(
+                  Text(
                     'TechBala',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22,
+                    style: GoogleFonts.rubikGlitch(
+                      fontSize: 24,
                       color: Colors.black87,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 30),
 
+              const SizedBox(height: 130),
+
+              /// Título
               Text(
                 _isLogin ? 'Entre na sua conta' : 'Crie sua conta',
-                style: const TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  shadows: [
-                    Shadow(
-                      blurRadius: 2,
-                      color: Colors.black26,
-                      offset: Offset(1, 1),
-                    ),
-                  ],
+                style: GoogleFonts.righteous(
+                  fontSize: 25,
+                  fontWeight: FontWeight.w900,
                 ),
               ),
-              const SizedBox(height: 30),
 
-              if (!_isLogin)
-                _buildTextField("Nome:", _nameController, false),
-              _buildTextField("Email:", _emailController, false),
-              _buildTextField("Criar senha:", _passwordController, true),
-              if (!_isLogin)
-                _buildTextField("Confirmar senha:", _confirmPasswordController, true),
+              const SizedBox(height: 50),
 
-              const SizedBox(height: 25),
+              if (!_isLogin) _inputField('Nome', _nameController, false),
 
-              GestureDetector(
-                onTap: _authenticate,
-                child: const Text(
-                  "Avançar",
-                  style: TextStyle(
-                    color: Colors.blueAccent,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+              _inputField('Email', _emailController, false),
+              _inputField('Senha', _passwordController, true),
+
+              const SizedBox(height: 50),
+
+              /// Botão Entrar / Cadastrar
+              SizedBox(
+                width: double.infinity,
+                height: 55,
+                child: ElevatedButton(
+                  onPressed: _authenticate,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF2962FF),
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  child: Text(
+                    _isLogin ? 'Entrar' : 'Cadastrar',
+                    style: GoogleFonts.righteous(
+                      color: Color.fromARGB(255, 255, 255, 255),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
 
-              const SizedBox(height: 15),
+              const SizedBox(height: 20),
 
+              /// Alternar Login / Cadastro
               TextButton(
                 onPressed: () {
                   setState(() => _isLogin = !_isLogin);
                 },
                 child: Text(
-                  _isLogin ? "Criar nova conta" : "Já tenho conta",
-                  style: const TextStyle(color: Colors.black54),
+                  _isLogin ? 'Criar nova conta' : 'Já tenho conta',
+                  style: const TextStyle(
+                    color: Color(0xFF2962FF),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],
@@ -152,23 +163,54 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // Widget de campo de texto personalizado
-  Widget _buildTextField(String label, TextEditingController controller, bool isPassword) {
+  /// Campo estilizado (igual ao design A)
+  Widget _inputField(
+    String hint,
+    TextEditingController controller,
+    bool isPassword,
+  ) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 15),
-      child: TextField(
-        controller: controller,
-        obscureText: isPassword,
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: const TextStyle(color: Colors.black54, fontWeight: FontWeight.bold),
-          filled: true,
-          fillColor: const Color(0xFFD9E6F3),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide.none,
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.85),
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.12),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: TextField(
+          controller: controller,
+          obscureText: isPassword,
+          style: GoogleFonts.righteous(fontSize: 16, color: Colors.black87),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: GoogleFonts.righteous(color: Colors.grey[600]),
+
+            // 🔹 Borda normal (sem clicar)
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30),
+              borderSide: BorderSide.none,
+            ),
+
+            // 🔹 Borda quando clicar (FOCUS)
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30),
+              borderSide: const BorderSide(
+                color: Color(0xFF2962FF), // azul igual ao botão
+                width: 2,
+              ),
+            ),
+
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 25,
+              vertical: 16,
+            ),
           ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         ),
       ),
     );

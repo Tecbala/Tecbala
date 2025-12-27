@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meu_app/screens/apresMMA.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Apresbasquete extends StatelessWidget {
   const Apresbasquete({super.key});
@@ -48,9 +49,9 @@ class Apresbasquete extends StatelessWidget {
                 const SizedBox(height: 40),
 
                 // Título
-                const Text(
+                Text(
                   'Basquete',
-                  style: TextStyle(
+                  style: GoogleFonts.righteous(
                     fontSize: 40,
                     fontWeight: FontWeight.bold,
                     color: Colors.black54,
@@ -61,11 +62,11 @@ class Apresbasquete extends StatelessWidget {
                 const SizedBox(height: 16),
 
                 // Texto descritivo
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24.0),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: Text(
                     'Velocidade, explosão e controle. Um jogo\n de intensidade e inteligência em cada\n lance.',
-                    style: TextStyle(
+                    style: GoogleFonts.righteous(
                       fontSize: 18,
                       color: Colors.black87,
                       height: 1.4,
@@ -94,9 +95,9 @@ class Apresbasquete extends StatelessWidget {
                       ),
                       elevation: 8, // Sombra
                     ),
-                    child: const Text(
+                    child: Text(
                       'Avançar',
-                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                      style: GoogleFonts.righteous(fontSize: 22, fontWeight: FontWeight.bold),
                     ),
                   ),
 
